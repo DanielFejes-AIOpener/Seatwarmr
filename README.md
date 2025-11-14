@@ -37,8 +37,9 @@ See `test/README.md` for more details.
 1. **Swipe Right (Like)**: Drag the card to the right or click the heart button
 2. **Swipe Left (Pass)**: Drag the card to the left or click the X button
 3. **Visual Feedback**: The card follows your drag with rotation effects
-4. **Progress**: Track your progress through the 5 profiles with the progress bar
-5. **Completion**: After swiping through all profiles, you'll be redirected to a completion page
+4. **Completion**: After swiping through all profiles, you'll be redirected to a completion page
+5. **View Results**: Click "View Results" to see which profiles you liked or passed (testing page)
+6. **Direct Access**: Visit `http://localhost:8000/results.html` to see swipe results anytime
 
 ## Project Structure
 
@@ -46,6 +47,7 @@ See `test/README.md` for more details.
 .
 ├── index.html          # Main swiping interface
 ├── complete.html       # Completion page
+├── results.html        # Swipe results debug page
 ├── styles.css          # Tinder-style CSS
 ├── app.js              # Swipe logic and interactions
 ├── test/

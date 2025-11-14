@@ -8,44 +8,35 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Header -->
-        <header class="header">
-            <div class="logo">🔥 Seatwarmr</div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-        </header>
-
         <!-- Card Container -->
         <div class="card-container" id="cardContainer">
             <div class="card" id="card">
-                <div class="card-image" id="cardImage"></div>
-                <div class="card-info">
-                    <div class="card-name">
-                        <span id="cardName"></span>
-                        <span id="cardAge"></span>
+                <div class="card-image" id="cardImage">
+                    <!-- Swipe Indicators -->
+                    <div class="swipe-indicator like-indicator" id="likeIndicator">LIKE</div>
+                    <div class="swipe-indicator nope-indicator" id="nopeIndicator">NOPE</div>
+                    
+                    <!-- Card Info Overlay -->
+                    <div class="card-info-overlay">
+                        <div class="card-name" id="cardName"></div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <button class="action-btn nope-btn" id="nopeBtn">
+                                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                            <button class="action-btn like-btn" id="likeBtn">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
-                    <div class="card-bio" id="cardBio"></div>
                 </div>
-                <!-- Swipe Indicators -->
-                <div class="swipe-indicator like-indicator" id="likeIndicator">LIKE</div>
-                <div class="swipe-indicator nope-indicator" id="nopeIndicator">NOPE</div>
             </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-            <button class="action-btn nope-btn" id="nopeBtn">
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-            <button class="action-btn like-btn" id="likeBtn">
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                </svg>
-            </button>
         </div>
     </div>
 

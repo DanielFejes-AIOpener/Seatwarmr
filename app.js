@@ -39,23 +39,23 @@ let startX = 0;
 let startY = 0;
 let currentX = 0;
 let currentY = 0;
+let swipeResults = [];
 
 // DOM elements
 const card = document.getElementById('card');
 const cardImage = document.getElementById('cardImage');
 const cardName = document.getElementById('cardName');
-const cardAge = document.getElementById('cardAge');
-const cardBio = document.getElementById('cardBio');
 const likeIndicator = document.getElementById('likeIndicator');
 const nopeIndicator = document.getElementById('nopeIndicator');
-const progressFill = document.getElementById('progressFill');
 const likeBtn = document.getElementById('likeBtn');
 const nopeBtn = document.getElementById('nopeBtn');
 
 // Initialize app
 function init() {
+    // Clear previous swipe results
+    localStorage.removeItem('swipeResults');
+    swipeResults = [];
     loadProfile(currentProfileIndex);
-    updateProgress();
     setupEventListeners();
 }
 
@@ -69,20 +69,12 @@ function loadProfile(index) {
     const profile = profiles[index];
     cardImage.style.backgroundImage = `url(${profile.image})`;
     cardName.textContent = profile.name;
-    cardAge.textContent = profile.age;
-    cardBio.textContent = profile.bio;
     
     // Reset card position and indicators
     card.style.transform = '';
     card.classList.remove('swiped-left', 'swiped-right');
     likeIndicator.style.opacity = '0';
     nopeIndicator.style.opacity = '0';
-}
-
-// Update progress bar
-function updateProgress() {
-    const progress = (currentProfileIndex / profiles.length) * 100;
-    progressFill.style.width = `${progress}%`;
 }
 
 // Setup event listeners
@@ -181,6 +173,23 @@ function swipe(direction) {
     // Disable interactions during animation
     card.style.pointerEvents = 'none';
     
+    // Hide indicators immediately
+    likeIndicator.style.opacity = '0';
+    nopeIndicator.style.opacity = '0';
+    
+    // Track the swipe result
+    const profile = profiles[currentProfileIndex];
+    swipeResults.push({
+        name: profile.name,
+        age: profile.age,
+        bio: profile.bio,
+        image: profile.image,
+        direction: direction
+    });
+    
+    // Save to localStorage
+    localStorage.setItem('swipeResults', JSON.stringify(swipeResults));
+    
     if (direction === 'right') {
         card.classList.add('swiped-right');
     } else {
@@ -190,7 +199,6 @@ function swipe(direction) {
     // Move to next profile after animation
     setTimeout(() => {
         currentProfileIndex++;
-        updateProgress();
         
         if (currentProfileIndex >= profiles.length) {
             redirectToComplete();
