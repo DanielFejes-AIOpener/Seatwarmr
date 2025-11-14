@@ -20,7 +20,7 @@ python3 -m http.server 8000
 
 The test suite covers:
 
-1. ✅ Profile data structure (5 profiles exist)
+1. ✅ Profile data structure (7 profiles exist)
 2. ✅ Profile field validation (name, age, bio, image)
 3. ✅ Initial state (starts at profile index 0)
 4. ✅ Profile progression tracking
@@ -28,8 +28,8 @@ The test suite covers:
 6. ✅ Profile loading functionality exists
 7. ✅ Unique profile names
 8. ✅ Valid age ranges (18-100)
-9. ✅ Valid image URLs
-10. ✅ Completion after 5 profiles
+9. ✅ Valid image paths
+10. ✅ Completion after 7 profiles
 
 ## Expected Results
 

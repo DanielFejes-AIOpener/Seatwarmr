@@ -1,34 +1,46 @@
 // Mock profile data
 const profiles = [
     {
-        name: "Sarah",
+        name: "Noa",
         age: 24,
         bio: "Coffee enthusiast ☕ | Adventure seeker 🏔️ | Dog mom 🐕",
-        image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&h=600&fit=crop"
+        image: "assets/noa.png"
     },
     {
-        name: "Jessica",
+        name: "Saphira",
         age: 26,
         bio: "Artist 🎨 | Yoga lover 🧘‍♀️ | Plant parent 🌱",
-        image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&h=600&fit=crop"
+        image: "assets/saphira.png"
     },
     {
-        name: "Emily",
+        name: "Lena",
         age: 23,
         bio: "Foodie 🍕 | Traveler ✈️ | Music festival addict 🎵",
-        image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&h=600&fit=crop"
+        image: "assets/lena.png"
     },
     {
-        name: "Amanda",
+        name: "Frederique",
         age: 27,
         bio: "Fitness junkie 💪 | Bookworm 📚 | Beach lover 🏖️",
-        image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=500&h=600&fit=crop"
+        image: "assets/frederique.png"
     },
     {
-        name: "Rachel",
+        name: "Amaya",
         age: 25,
         bio: "Chef in training 👩‍🍳 | Wine enthusiast 🍷 | Comedy fan 😂",
-        image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&h=600&fit=crop"
+        image: "assets/amaya.png"
+    },
+    {
+        name: "Astrid",
+        age: 28,
+        bio: "Photographer 📸 | Coffee addict ☕ | Sunset chaser 🌅",
+        image: "assets/astrid.png"
+    },
+    {
+        name: "Liwa",
+        age: 24,
+        bio: "Dance instructor 💃 | Foodie 🍜 | Adventure lover 🌍",
+        image: "assets/liwa.png"
     }
 ];
 

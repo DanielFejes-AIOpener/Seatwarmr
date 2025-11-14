@@ -7,7 +7,7 @@ A Tinder-style dating app with swipe functionality built with vanilla HTML, CSS,
 - 💳 Swipeable profile cards with drag-to-swipe mechanic
 - 📱 Touch and mouse support
 - 🎨 Tinder-style UI with smooth animations
-- 📊 Progress tracking (5 profiles)
+- 📊 Progress tracking (7 profiles)
 - ✨ Visual feedback during swipes
 - 🎯 Action buttons for manual swiping
 

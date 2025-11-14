@@ -142,11 +142,11 @@
         // Run tests
         const runner = new TestRunner();
 
-        // Test 1: Profile data exists and has 5 profiles
-        runner.test('Should have exactly 5 profiles', () => {
+        // Test 1: Profile data exists and has 7 profiles
+        runner.test('Should have exactly 7 profiles', () => {
             const profiles = window.profiles;
             assert(profiles, 'Profiles array should exist');
-            assertEqual(profiles.length, 5, 'Should have exactly 5 profiles');
+            assertEqual(profiles.length, 7, 'Should have exactly 7 profiles');
         });
 
         // Test 2: Each profile has required fields
@@ -202,19 +202,20 @@
             });
         });
 
-        // Test 9: Profile images should be valid URLs
-        runner.test('Profile images should be valid URLs', () => {
+        // Test 9: Profile images should be valid paths
+        runner.test('Profile images should be valid paths', () => {
             const profiles = window.profiles;
             profiles.forEach((profile, index) => {
-                assert(profile.image.startsWith('http'), `Profile ${index} image should be a valid URL`);
+                assert(profile.image, `Profile ${index} should have an image path`);
+                assert(typeof profile.image === 'string', `Profile ${index} image should be a string`);
             });
         });
 
-        // Test 10: Progression should complete after 5 swipes
-        runner.test('Should complete after swiping through 5 profiles', () => {
+        // Test 10: Progression should complete after 7 swipes
+        runner.test('Should complete after swiping through 7 profiles', () => {
             const profiles = window.profiles;
             const totalProfiles = profiles.length;
-            assertEqual(totalProfiles, 5, 'Should have 5 profiles to complete the swiping phase');
+            assertEqual(totalProfiles, 7, 'Should have 7 profiles to complete the swiping phase');
         });
 
         // Run all tests
