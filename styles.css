@@ -1,0 +1,314 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 430px;
+    height: 100vh;
+    max-height: 900px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Header */
+.header {
+    padding: 20px;
+    background: linear-gradient(135deg, #fd297b 0%, #ff5864 100%);
+    color: white;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: white;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+/* Card Container */
+.card-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+    overflow: visible;
+}
+
+.card {
+    width: 100%;
+    height: 100%;
+    max-height: 550px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    position: relative;
+    cursor: grab;
+    transition: transform 0.1s ease;
+    user-select: none;
+    touch-action: none;
+}
+
+.card.dragging {
+    cursor: grabbing;
+    transition: none;
+}
+
+.card.swiped-right {
+    animation: swipeRight 0.3s ease-out forwards;
+}
+
+.card.swiped-left {
+    animation: swipeLeft 0.3s ease-out forwards;
+}
+
+@keyframes swipeRight {
+    to {
+        transform: translateX(150%) rotate(30deg);
+        opacity: 0;
+    }
+}
+
+@keyframes swipeLeft {
+    to {
+        transform: translateX(-150%) rotate(-30deg);
+        opacity: 0;
+    }
+}
+
+.card-image {
+    width: 100%;
+    height: 70%;
+    background-size: cover;
+    background-position: center;
+    border-radius: 20px 20px 0 0;
+    position: relative;
+}
+
+.card-image::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
+    border-radius: 0 0 0 0;
+}
+
+.card-info {
+    padding: 20px;
+    height: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.card-name {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-name span:last-child {
+    font-size: 24px;
+    font-weight: normal;
+    color: #666;
+}
+
+.card-bio {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.4;
+}
+
+/* Swipe Indicators */
+.swipe-indicator {
+    position: absolute;
+    top: 50px;
+    font-size: 48px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: 4px solid;
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity 0.1s ease;
+    pointer-events: none;
+    transform: rotate(-15deg);
+}
+
+.like-indicator {
+    right: 30px;
+    color: #21d07a;
+    border-color: #21d07a;
+    transform: rotate(15deg);
+}
+
+.nope-indicator {
+    left: 30px;
+    color: #fd297b;
+    border-color: #fd297b;
+    transform: rotate(-15deg);
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 30px;
+    background: white;
+}
+
+.action-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.action-btn:hover {
+    transform: scale(1.1);
+}
+
+.action-btn:active {
+    transform: scale(0.95);
+}
+
+.nope-btn {
+    background: white;
+    color: #fd297b;
+    border: 2px solid #fd297b;
+}
+
+.nope-btn:hover {
+    background: #fd297b;
+    color: white;
+}
+
+.like-btn {
+    background: white;
+    color: #21d07a;
+    border: 2px solid #21d07a;
+}
+
+.like-btn:hover {
+    background: #21d07a;
+    color: white;
+}
+
+/* Complete Page */
+.complete-page {
+    justify-content: center;
+    align-items: center;
+}
+
+.complete-content {
+    text-align: center;
+    padding: 40px;
+}
+
+.complete-icon {
+    font-size: 100px;
+    margin-bottom: 30px;
+    animation: bounce 1s ease infinite;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.complete-content h1 {
+    font-size: 32px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.complete-content p {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.restart-btn {
+    background: linear-gradient(135deg, #fd297b 0%, #ff5864 100%);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    box-shadow: 0 4px 15px rgba(253, 41, 123, 0.4);
+}
+
+.restart-btn:hover {
+    transform: scale(1.05);
+}
+
+.restart-btn:active {
+    transform: scale(0.95);
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+    .app-container {
+        border-radius: 0;
+        max-height: 100vh;
+    }
+    
+    body {
+        background: white;
+    }
+}
+
