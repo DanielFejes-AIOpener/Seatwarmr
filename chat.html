@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Simple Chat Demo</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        body {
+            /* Lighten the page background so the chat card is clearly visible */
+            background: #0b1120;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .chat-wrapper {
+            width: 400px;
+            max-width: 100%;
+            height: 600px;
+            background: #020617;
+            border-radius: 24px;
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.9);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #4b5563;
+        }
+
+        .chat-header {
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #0f172a, #111827);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #1f2937;
+            gap: 10px;
+        }
+
+        .chat-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 999px;
+            background: radial-gradient(circle at 30% 30%, #38bdf8, #6366f1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .chat-title {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-title span:nth-child(1) {
+            color: #e5e7eb;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .chat-title span:nth-child(2) {
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .chat-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: auto;
+        }
+
+        .header-button {
+            border: 1px solid #4b5563;
+            background: #020617;
+            color: #e5e7eb;
+            border-radius: 999px;
+            padding: 4px 10px;
+            font-size: 11px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+        }
+
+        .header-button:hover {
+            background: #111827;
+            border-color: #6366f1;
+            transform: translateY(-0.5px);
+        }
+
+        .header-button:active {
+            transform: translateY(0);
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 16px 12px;
+            overflow-y: auto;
+            background: radial-gradient(circle at top left, #0f172a, #020617);
+        }
+
+        .message-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .message-row.user {
+            justify-content: flex-end;
+        }
+
+        .message-row.bot {
+            justify-content: flex-start;
+        }
+
+        .message-bubble {
+            max-width: 75%;
+            padding: 10px 12px;
+            border-radius: 18px;
+            font-size: 13px;
+            line-height: 1.4;
+            position: relative;
+            color: #e5e7eb;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+
+        .message-row.user .message-bubble {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-row.bot .message-bubble {
+            background: #111827;
+            border: 1px solid #374151;
+            border-bottom-left-radius: 4px;
+        }
+
+        .timestamp {
+            display: block;
+            margin-top: 4px;
+            font-size: 10px;
+            opacity: 0.65;
+            text-align: right;
+        }
+
+        .chat-footer {
+            padding: 10px;
+            border-top: 1px solid #1f2937;
+            background: #020617;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: #020617;
+            border-radius: 999px;
+            border: 1px solid #1f2937;
+            padding: 10px 14px;
+            color: #e5e7eb;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .chat-input::placeholder {
+            color: #6b7280;
+        }
+
+        .send-button {
+            border: none;
+            border-radius: 999px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #38bdf8, #6366f1);
+            color: white;
+            cursor: pointer;
+            transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+            box-shadow: 0 10px 20px rgba(56, 189, 248, 0.25);
+            flex-shrink: 0;
+        }
+
+        .send-button:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.05);
+        }
+
+        .send-button:active {
+            transform: translateY(0);
+            box-shadow: none;
+            filter: brightness(0.95);
+        }
+
+        .send-icon {
+            border: solid white;
+            border-width: 0 0 2px 2px;
+            display: inline-block;
+            padding: 3px;
+            transform: rotate(45deg) translate(1px, -1px);
+            margin-left: 2px;
+        }
+
+        .chat-footer.disabled {
+            opacity: 0.6;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+        }
+
+        .modal-hidden {
+            display: none;
+        }
+
+        .modal {
+            background: #020617;
+            border-radius: 16px;
+            padding: 16px 14px;
+            width: 90%;
+            max-width: 360px;
+            border: 1px solid #4b5563;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .modal-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e5e7eb;
+        }
+
+        .modal-close {
+            border: none;
+            background: transparent;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 2px 4px;
+        }
+
+        .modal-close:hover {
+            color: #e5e7eb;
+        }
+
+        .modal-body {
+            margin-top: 6px;
+            max-height: 320px;
+            overflow-y: auto;
+            font-size: 12px;
+            color: #e5e7eb;
+            white-space: pre-wrap;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 12px;
+            background: radial-gradient(circle at top, #4b5563, #020617);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #e5e7eb;
+            font-size: 13px;
+            border: 1px dashed #6b7280;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chat-wrapper">
+        <div class="chat-header">
+            <div class="chat-header-left">
+                <div class="avatar">V</div>
+                <div class="chat-title">
+                    <span>Vibe Chat</span>
+                    <span>Always online · demo bot</span>
+                </div>
+            </div>
+            <div class="chat-actions">
+                <button id="prefsButton" class="header-button" type="button">Prefs</button>
+                <button id="videoButton" class="header-button" type="button">Video</button>
+            </div>
+        </div>
+
+        <div id="chatBody" class="chat-body"></div>
+
+        <div class="chat-footer">
+            <input id="chatInput" type="text" class="chat-input" placeholder="Type a message..." autocomplete="off" />
+            <button id="sendButton" class="send-button" aria-label="Send message">
+                <span class="send-icon"></span>
+            </button>
+        </div>
+
+        <div id="preferencesOverlay" class="modal-overlay modal-hidden">
+            <div class="modal">
+                <div class="modal-header">
+                    <span class="modal-title">Your vibes &amp; preferences</span>
+                    <button id="closePrefsButton" class="modal-close" type="button">✕</button>
+                </div>
+                <div id="preferencesContent" class="modal-body">
+                    No preferences saved yet. Start chatting and they’ll show up here.
+                </div>
+            </div>
+        </div>
+
+        <div id="videoOverlay" class="modal-overlay modal-hidden">
+            <div class="modal">
+                <div class="modal-header">
+                    <span class="modal-title">Video call (placeholder)</span>
+                    <button id="closeVideoButton" class="modal-close" type="button">✕</button>
+                </div>
+                <div class="modal-body">
+                    <div class="video-placeholder">
+                        Video call UI placeholder — your live video chat would show up here.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatBody = document.getElementById("chatBody");
+        const chatInput = document.getElementById("chatInput");
+        const sendButton = document.getElementById("sendButton");
+        const chatFooter = document.querySelector(".chat-footer");
+        const prefsButton = document.getElementById("prefsButton");
+        const videoButton = document.getElementById("videoButton");
+        const preferencesOverlay = document.getElementById("preferencesOverlay");
+        const videoOverlay = document.getElementById("videoOverlay");
+        const preferencesContent = document.getElementById("preferencesContent");
+        const closePrefsButton = document.getElementById("closePrefsButton");
+        const closeVideoButton = document.getElementById("closeVideoButton");
+
+        // WARNING: This key is embedded in client-side code for demo purposes only.
+        // Anyone who can load this page can see and misuse the key. Do NOT use this
+        // pattern in production; proxy your requests through a backend instead.
+        const OPENROUTER_API_KEY = "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";
+        const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
+
+        const SYSTEM_PROMPT = [
+            "You are Nova, a playful, kind, flirty-but-respectful match in a fake dating app experience.",
+            "Your job is to keep the chat flowing, make the other person feel interesting and seen, and avoid sounding like an AI or mentioning systems, prompts, or tokens.",
+            "Stay light, romantic, and a bit teasing, but never explicit or creepy. No real-world advice, medical, legal, or financial guidance.",
+            "Keep answers concise: usually 2–6 sentences total, max 2 short paragraphs.",
+            "Always end your reply with a natural follow-up question that keeps the conversation going.",
+            "You are chatting in a casual, modern style, using emojis sparingly."
+        ].join(" ");
+
+        // Keep a limited rolling history (excluding the system message)
+        let messageHistory = [];
+        const MAX_HISTORY_MESSAGES = 10; // ~5 user/assistant turns
+
+        function getTime() {
+            const now = new Date();
+            return now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        }
+
+        function appendMessage(text, sender = "user") {
+            const row = document.createElement("div");
+            row.classList.add("message-row", sender);
+
+            const bubble = document.createElement("div");
+            bubble.classList.add("message-bubble");
+            bubble.textContent = text;
+
+            const time = document.createElement("span");
+            time.classList.add("timestamp");
+            time.textContent = getTime();
+            bubble.appendChild(time);
+
+            row.appendChild(bubble);
+            chatBody.appendChild(row);
+
+            // Scroll to bottom
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        function toggleOverlay(el, show) {
+            if (!el) return;
+            if (show) {
+                el.classList.remove("modal-hidden");
+            } else {
+                el.classList.add("modal-hidden");
+            }
+        }
+
+        async function extractPreferenceSnippet(aiMessage, userMessage) {
+            if (!aiMessage || !userMessage) return "";
+
+            const PREF_ANALYZER_PROMPT = [
+                "You analyze a single turn of a playful dating-app style chat between two people.",
+                "You get the AI's last question/message and the human's reply.",
+                "Your ONLY job is to extract concrete preferences the human expresses about what they like or want in a romantic partner or relationship.",
+                "If there is no clear partner preference in the reply, respond EXACTLY with: NO_PREFERENCE.",
+                "If there is a preference, respond with ONE short plain-text line summarizing it (no bullets, no numbering, no extra commentary).",
+                "Write it as a simple statement, e.g. 'Prefers partners who are adventurous and love spontaneous trips.'"
+            ].join(" ");
+
+            const messages = [
+                { role: "system", content: PREF_ANALYZER_PROMPT },
+                {
+                    role: "user",
+                    content: [
+                        "Here is the latest exchange in the chat.",
+                        "",
+                        "AI just said:",
+                        `\"\"\"${aiMessage}\"\"\"`,
+                        "",
+                        "User replied:",
+                        `\"\"\"${userMessage}\"\"\"`,
+                        "",
+                        "Extract partner preferences as instructed."
+                    ].join("\n")
+                }
+            ];
+
+            try {
+                const snippet = await callOpenRouter(messages);
+                return snippet.trim();
+            } catch (err) {
+                console.error("Failed to extract preference snippet", err);
+                return "";
+            }
+        }
+
+        async function savePreferencesFromTurn(aiMessage, userMessage) {
+            try {
+                const snippet = await extractPreferenceSnippet(aiMessage, userMessage);
+                const normalized = (snippet || "").trim();
+                if (!normalized || normalized.toUpperCase() === "NO_PREFERENCE") {
+                    return;
+                }
+
+                await fetch("/api/preferences", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        speaker: "user",
+                        message: normalized
+                    })
+                });
+            } catch (err) {
+                console.error("Failed to save preference", err);
+            }
+        }
+
+        async function loadPreferences() {
+            try {
+                const res = await fetch("/api/preferences");
+                if (!res.ok) {
+                    throw new Error("Failed to load preferences");
+                }
+                const data = await res.json();
+                preferencesContent.textContent =
+                    data.content && data.content.trim().length > 0
+                        ? data.content
+                        : "No preferences saved yet. Start chatting and they’ll show up here.";
+            } catch (err) {
+                console.error(err);
+                preferencesContent.textContent = "Couldn’t load preferences. Make sure the local server is running.";
+            }
+        }
+
+        async function callOpenRouter(messages) {
+            const response = await fetch(OPENROUTER_API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+                    "HTTP-Referer": window.location.href || "http://localhost",
+                    "X-Title": "Vibe Dating Chat Demo"
+                },
+                body: JSON.stringify({
+                    model: "google/gemini-2.5-flash",
+                    messages,
+                    max_tokens: 256,
+                    temperature: 0.9
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`OpenRouter error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            const reply = data.choices?.[0]?.message?.content;
+            if (!reply) {
+                throw new Error("No reply from model");
+            }
+            return reply.trim();
+        }
+
+        async function getModelReply(userMessage) {
+            // Add the latest user message to rolling history
+            messageHistory.push({ role: "user", content: userMessage });
+            if (messageHistory.length > MAX_HISTORY_MESSAGES) {
+                messageHistory = messageHistory.slice(-MAX_HISTORY_MESSAGES);
+            }
+
+            const messages = [
+                { role: "system", content: SYSTEM_PROMPT },
+                ...messageHistory
+            ];
+
+            const reply = await callOpenRouter(messages);
+
+            // Store the assistant reply in history
+            messageHistory.push({ role: "assistant", content: reply });
+            if (messageHistory.length > MAX_HISTORY_MESSAGES) {
+                messageHistory = messageHistory.slice(-MAX_HISTORY_MESSAGES);
+            }
+
+            return reply;
+        }
+
+        async function requestIcebreaker() {
+            try {
+                const messages = [
+                    { role: "system", content: SYSTEM_PROMPT },
+                    {
+                        role: "user",
+                        content: "Start our chat with a short, playful icebreaker question like we're matched on a dating app."
+                    }
+                ];
+
+                const reply = await callOpenRouter(messages);
+
+                // Seed history so the model remembers how the conversation started
+                messageHistory.push(
+                    messages[1],
+                    { role: "assistant", content: reply }
+                );
+                appendMessage(reply, "bot");
+            } catch (err) {
+                console.error(err);
+                appendMessage("Hey, I’m Nova. I’m kinda into vibey connections more than small talk. What’s your ideal first date vibe?", "bot");
+            }
+        }
+
+        async function handleSend() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            // User message
+            appendMessage(text, "user");
+
+            // Fire-and-forget preference extraction based on the last AI message + this reply
+            const lastAssistant = [...messageHistory].slice().reverse().find((m) => m.role === "assistant")?.content || "";
+            savePreferencesFromTurn(lastAssistant, text);
+
+            chatInput.value = "";
+            chatInput.focus();
+
+            // Disable input while waiting
+            chatInput.disabled = true;
+            sendButton.disabled = true;
+            chatFooter.classList.add("disabled");
+
+            try {
+                const reply = await getModelReply(text);
+                appendMessage(reply, "bot");
+            } catch (err) {
+                console.error(err);
+                appendMessage("Oops, I lost the connection for a sec. Mind sending that again or telling me something new about you?", "bot");
+            } finally {
+                chatInput.disabled = false;
+                sendButton.disabled = false;
+                chatFooter.classList.remove("disabled");
+                chatInput.focus();
+            }
+        }
+
+        window.addEventListener("load", () => {
+            requestIcebreaker();
+        });
+
+        prefsButton.addEventListener("click", async () => {
+            await loadPreferences();
+            toggleOverlay(preferencesOverlay, true);
+        });
+
+        closePrefsButton.addEventListener("click", () => {
+            toggleOverlay(preferencesOverlay, false);
+        });
+
+        preferencesOverlay.addEventListener("click", (e) => {
+            if (e.target === preferencesOverlay) {
+                toggleOverlay(preferencesOverlay, false);
+            }
+        });
+
+        videoButton.addEventListener("click", () => {
+            toggleOverlay(videoOverlay, true);
+        });
+
+        closeVideoButton.addEventListener("click", () => {
+            toggleOverlay(videoOverlay, false);
+        });
+
+        videoOverlay.addEventListener("click", (e) => {
+            if (e.target === videoOverlay) {
+                toggleOverlay(videoOverlay, false);
+            }
+        });
+
+        // Send on button click
+        sendButton.addEventListener("click", () => {
+            handleSend();
+        });
+
+        // Send on Enter key
+        chatInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSend();
+            }
+        });
+    </script>
+</body>
+
+</html>
