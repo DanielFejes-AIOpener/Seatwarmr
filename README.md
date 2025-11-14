@@ -47,9 +47,11 @@ See `test/README.md` for more details.
 .
 ├── index.html          # Main swiping interface
 ├── complete.html       # Completion page
+├── match.html          # Match found page
 ├── results.html        # Swipe results debug page
 ├── styles.css          # Tinder-style CSS
 ├── app.js              # Swipe logic and interactions
+├── assets/             # Profile images
 ├── test/
 │   ├── test.html       # Test suite
 │   └── README.md       # Test documentation

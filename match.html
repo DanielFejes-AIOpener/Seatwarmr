@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match Found - Seatwarmr</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #1a1a1a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .match-container {
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            color: white;
+        }
+
+        .app-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 60px;
+            letter-spacing: -0.5px;
+        }
+
+        .profile-card {
+            position: relative;
+            width: 100%;
+            max-width: 380px;
+            margin: 0 auto 40px;
+        }
+
+        .profile-image {
+            width: 100%;
+            aspect-ratio: 3/4;
+            border-radius: 30px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .heart-badge {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .heart-badge svg {
+            width: 30px;
+            height: 30px;
+            fill: white;
+        }
+
+        .match-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .match-subtitle {
+            font-size: 16px;
+            color: #b0b0b0;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .chat-button {
+            width: 100%;
+            max-width: 400px;
+            padding: 18px 40px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .chat-button:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(255, 107, 107, 0.4);
+        }
+
+        .chat-button:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 600px) {
+            .app-title {
+                font-size: 28px;
+                margin-bottom: 40px;
+            }
+
+            .match-title {
+                font-size: 28px;
+            }
+
+            .profile-card {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="match-container">
+        <h1 class="app-title">SeatWarmr</h1>
+        
+        <div class="profile-card">
+            <img src="assets/match.png" alt="Match profile" class="profile-image">
+            <div class="heart-badge">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+            </div>
+        </div>
+
+        <h2 class="match-title">We found a real match,<br>Meet Lizz.</h2>
+        
+        <p class="match-subtitle">
+            Based on your preferences and personal traits, we have found a match.
+        </p>
+
+        <button class="chat-button" onclick="window.location.href='index.html'">
+            Start chatting
+        </button>
+    </div>
+</body>
+</html>
+
