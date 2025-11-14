@@ -24,7 +24,8 @@
         .chat-wrapper {
             width: 400px;
             max-width: 100%;
-            height: 600px;
+            /* Default desktop-ish size */
+            height: 720px;
             background: #020617;
             border-radius: 24px;
             box-shadow: 0 24px 60px rgba(15, 23, 42, 0.9);
@@ -54,14 +55,29 @@
             width: 32px;
             height: 32px;
             border-radius: 999px;
-            background: radial-gradient(circle at 30% 30%, #38bdf8, #6366f1);
-            display: flex;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-image: url("assets/noa.png");
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .avatar-button {
+            border: none;
+            padding: 0;
+            margin: 0;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 999px;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 16px;
-            flex-shrink: 0;
+        }
+
+        .avatar-button:focus-visible {
+            outline: 2px solid #6366f1;
+            outline-offset: 2px;
         }
 
         .chat-title {
@@ -109,6 +125,11 @@
 
         .header-button:active {
             transform: translateY(0);
+        }
+
+        .header-icon {
+            font-size: 14px;
+            line-height: 1;
         }
 
         .chat-body {
@@ -278,7 +299,7 @@
 
         .modal-body {
             margin-top: 6px;
-            max-height: 320px;
+            max-height: 80vh;
             overflow-y: auto;
             font-size: 12px;
             color: #e5e7eb;
@@ -297,6 +318,65 @@
             font-size: 13px;
             border: 1px dashed #6b7280;
         }
+
+        .video-element {
+            width: 100%;
+            border-radius: 12px;
+            background: #000;
+        }
+
+        .primary-button {
+            margin-top: 10px;
+            border-radius: 999px;
+            border: 1px solid #4b5563;
+            background: #111827;
+            padding: 6px 12px;
+            font-size: 12px;
+            color: #e5e7eb;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .primary-button:hover {
+            background: #1f2937;
+            border-color: #6366f1;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Phone layout: full-screen chat, no card look */
+        @media (max-width: 640px) {
+            body {
+                background: #020617;
+                align-items: stretch;
+                justify-content: stretch;
+                height: 100vh;
+            }
+
+            .chat-wrapper {
+                width: 100%;
+                max-width: 100%;
+                height: 100vh;
+                border-radius: 0;
+                box-shadow: none;
+                border: none;
+            }
+
+            .chat-body {
+                padding-inline: 10px;
+            }
+
+            .modal {
+                width: 100%;
+                max-width: 100%;
+                border-radius: 0;
+            }
+        }
     </style>
 </head>
 
@@ -304,15 +384,19 @@
     <div class="chat-wrapper">
         <div class="chat-header">
             <div class="chat-header-left">
-                <div class="avatar">V</div>
+                <button id="avatarButton" class="avatar-button" type="button" aria-label="View Noa profile picture">
+                    <div class="avatar"></div>
+                </button>
                 <div class="chat-title">
-                    <span>Vibe Chat</span>
+                    <span>Noa</span>
                     <span>Always online · demo bot</span>
                 </div>
             </div>
             <div class="chat-actions">
                 <button id="prefsButton" class="header-button" type="button">Prefs</button>
-                <button id="videoButton" class="header-button" type="button">Video</button>
+                <button id="videoButton" class="header-button" type="button" aria-label="Start video call">
+                    <span class="header-icon">📞</span>
+                </button>
             </div>
         </div>
 
@@ -344,9 +428,23 @@
                     <button id="closeVideoButton" class="modal-close" type="button">✕</button>
                 </div>
                 <div class="modal-body">
-                    <div class="video-placeholder">
-                        Video call UI placeholder — your live video chat would show up here.
-                    </div>
+                    <video id="videoPlayer" class="video-element" playsinline></video>
+                    <button id="startSecondVideoButton" class="primary-button hidden" type="button">
+                        ▶ Start next video
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="avatarOverlay" class="modal-overlay modal-hidden">
+            <div class="modal">
+                <div class="modal-header">
+                    <span class="modal-title">Noa</span>
+                    <button id="closeAvatarButton" class="modal-close" type="button">✕</button>
+                </div>
+                <div class="modal-body">
+                    <img src="assets/noa.png" alt="Noa"
+                        style="width: 100%; max-height: 70vh; object-fit: cover; border-radius: 12px;" />
                 </div>
             </div>
         </div>
@@ -361,15 +459,14 @@
         const videoButton = document.getElementById("videoButton");
         const preferencesOverlay = document.getElementById("preferencesOverlay");
         const videoOverlay = document.getElementById("videoOverlay");
+        const avatarOverlay = document.getElementById("avatarOverlay");
         const preferencesContent = document.getElementById("preferencesContent");
         const closePrefsButton = document.getElementById("closePrefsButton");
         const closeVideoButton = document.getElementById("closeVideoButton");
-
-        // WARNING: This key is embedded in client-side code for demo purposes only.
-        // Anyone who can load this page can see and misuse the key. Do NOT use this
-        // pattern in production; proxy your requests through a backend instead.
-        const OPENROUTER_API_KEY = "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";
-        const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
+        const avatarButton = document.getElementById("avatarButton");
+        const closeAvatarButton = document.getElementById("closeAvatarButton");
+        const videoPlayer = document.getElementById("videoPlayer");
+        const startSecondVideoButton = document.getElementById("startSecondVideoButton");
 
         const SYSTEM_PROMPT = [
             "You are Nova, a playful, kind, flirty-but-respectful match in a fake dating app experience.",
@@ -418,61 +515,20 @@
             }
         }
 
-        async function extractPreferenceSnippet(aiMessage, userMessage) {
-            if (!aiMessage || !userMessage) return "";
-
-            const PREF_ANALYZER_PROMPT = [
-                "You analyze a single turn of a playful dating-app style chat between two people.",
-                "You get the AI's last question/message and the human's reply.",
-                "Your ONLY job is to extract concrete preferences the human expresses about what they like or want in a romantic partner or relationship.",
-                "If there is no clear partner preference in the reply, respond EXACTLY with: NO_PREFERENCE.",
-                "If there is a preference, respond with ONE short plain-text line summarizing it (no bullets, no numbering, no extra commentary).",
-                "Write it as a simple statement, e.g. 'Prefers partners who are adventurous and love spontaneous trips.'"
-            ].join(" ");
-
-            const messages = [
-                { role: "system", content: PREF_ANALYZER_PROMPT },
-                {
-                    role: "user",
-                    content: [
-                        "Here is the latest exchange in the chat.",
-                        "",
-                        "AI just said:",
-                        `\"\"\"${aiMessage}\"\"\"`,
-                        "",
-                        "User replied:",
-                        `\"\"\"${userMessage}\"\"\"`,
-                        "",
-                        "Extract partner preferences as instructed."
-                    ].join("\n")
-                }
-            ];
-
-            try {
-                const snippet = await callOpenRouter(messages);
-                return snippet.trim();
-            } catch (err) {
-                console.error("Failed to extract preference snippet", err);
-                return "";
-            }
-        }
-
         async function savePreferencesFromTurn(aiMessage, userMessage) {
             try {
-                const snippet = await extractPreferenceSnippet(aiMessage, userMessage);
-                const normalized = (snippet || "").trim();
-                if (!normalized || normalized.toUpperCase() === "NO_PREFERENCE") {
-                    return;
-                }
-
-                await fetch("/api/preferences", {
+                console.log("[savePreferencesFromTurn] Called with:", {
+                    aiMessageSnippet: (aiMessage || "").slice(0, 80),
+                    userMessageSnippet: (userMessage || "").slice(0, 80)
+                });
+                await fetch("http://localhost:3000/api/preferences/analyze", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        speaker: "user",
-                        message: normalized
+                        aiMessage,
+                        userMessage
                     })
                 });
             } catch (err) {
@@ -482,11 +538,13 @@
 
         async function loadPreferences() {
             try {
-                const res = await fetch("/api/preferences");
+                console.log("[loadPreferences] Loading /api/preferences");
+                const res = await fetch("http://localhost:3000/api/preferences");
                 if (!res.ok) {
                     throw new Error("Failed to load preferences");
                 }
                 const data = await res.json();
+                console.log("[loadPreferences] Got content length:", (data.content || "").length);
                 preferencesContent.textContent =
                     data.content && data.content.trim().length > 0
                         ? data.content
@@ -498,16 +556,12 @@
         }
 
         async function callOpenRouter(messages) {
-            const response = await fetch(OPENROUTER_API_URL, {
+            const response = await fetch("http://localhost:3000/api/chat", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
-                    "HTTP-Referer": window.location.href || "http://localhost",
-                    "X-Title": "Vibe Dating Chat Demo"
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    model: "google/gemini-2.5-flash",
                     messages,
                     max_tokens: 256,
                     temperature: 0.9
@@ -519,7 +573,7 @@
             }
 
             const data = await response.json();
-            const reply = data.choices?.[0]?.message?.content;
+            const reply = data.reply;
             if (!reply) {
                 throw new Error("No reply from model");
             }
@@ -625,17 +679,95 @@
             }
         });
 
+        function startFirstVideo() {
+            if (!videoPlayer) return;
+            console.log("[video] Starting first video");
+            startSecondVideoButton.classList.add("hidden");
+            videoPlayer.src = "assets/vid1.mp4";
+            videoPlayer.autoplay = true;
+            videoPlayer.controls = true;
+            videoPlayer.currentTime = 0;
+            videoPlayer.play().catch((err) => console.error("[video] play error", err));
+        }
+
+        function prepareSecondVideo() {
+            if (!videoPlayer) return;
+            console.log("[video] Preparing second video");
+            videoPlayer.pause();
+            videoPlayer.currentTime = 0;
+            videoPlayer.src = "assets/vid2.mp4";
+            videoPlayer.autoplay = false;
+            // keep controls so user can pause/seek
+            startSecondVideoButton.classList.remove("hidden");
+        }
+
+        function prepareThirdVideo() {
+            if (!videoPlayer) return;
+            console.log("[video] Preparing third video");
+            videoPlayer.pause();
+            videoPlayer.currentTime = 0;
+            videoPlayer.src = "assets/vid3.mp4";
+            videoPlayer.autoplay = false;
+            startSecondVideoButton.classList.remove("hidden");
+        }
+
+        function resetVideoOverlay() {
+            if (!videoPlayer) return;
+            console.log("[video] Reset overlay");
+            videoPlayer.pause();
+            videoPlayer.removeAttribute("src");
+            videoPlayer.load();
+            startSecondVideoButton.classList.add("hidden");
+        }
+
+        if (videoPlayer) {
+            videoPlayer.addEventListener("ended", () => {
+                // If we just finished vid1, queue up vid2 with manual start
+                if (videoPlayer.src.includes("vid1.mp4")) {
+                    prepareSecondVideo();
+                } else if (videoPlayer.src.includes("vid2.mp4")) {
+                    // When vid2 ends, offer vid3 in the same way
+                    prepareThirdVideo();
+                }
+            });
+        }
+
+        if (startSecondVideoButton) {
+            startSecondVideoButton.addEventListener("click", () => {
+                console.log("[video] Starting second video");
+                startSecondVideoButton.classList.add("hidden");
+                videoPlayer.play().catch((err) => console.error("[video] play error", err));
+            });
+        }
+
         videoButton.addEventListener("click", () => {
             toggleOverlay(videoOverlay, true);
+            startFirstVideo();
         });
 
         closeVideoButton.addEventListener("click", () => {
+            resetVideoOverlay();
             toggleOverlay(videoOverlay, false);
         });
 
         videoOverlay.addEventListener("click", (e) => {
             if (e.target === videoOverlay) {
+                resetVideoOverlay();
                 toggleOverlay(videoOverlay, false);
+            }
+        });
+
+        avatarButton.addEventListener("click", () => {
+            toggleOverlay(avatarOverlay, true);
+        });
+
+        closeAvatarButton.addEventListener("click", () => {
+            toggleOverlay(avatarOverlay, false);
+        });
+
+        avatarOverlay.addEventListener("click", (e) => {
+            if (e.target === avatarOverlay) {
+                toggleOverlay(avatarOverlay, false);
             }
         });
 
